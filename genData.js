@@ -8,13 +8,15 @@ for (let trip of oldData) {
 	let newTrip = _.cloneDeep(trip);
 	let newStartHour = Math.floor(Math.random() * 23) + 0;
 	let newStartMin = Math.floor(Math.random() * 59) + 0;
+	let tripStartDateTime = new Date(trip.path[0][2] * 1000);
+	tripStartDateTime.setUTCHours(newStartHour);
+	tripStartDateTime.setUTCMinutes(newStartMin);
+	
 	console.log('----------------------');
 	newTrip.path.forEach(function(item, i){
-		let tripDate = new Date(item[2] * 1000);
-		tripDate.setUTCHours(newStartHour);
-		tripDate.setUTCMinutes((newStartMin + i) % 60);
-		console.log(tripDate.valueOf() /1000);
-		item[2] = tripDate.valueOf() / 1000;
+		// increment by 1 min
+		item[2] = (tripStartDateTime.valueOf() / 1000) + (60 * i);
+		console.log(item[2]);
 	})
 	newData.push(newTrip);
 }

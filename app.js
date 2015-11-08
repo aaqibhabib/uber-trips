@@ -62,8 +62,6 @@ if(filename.length === 1) {
 			let startHour = (new Date(uberTrip.path[0][2] * 1000)).getUTCHours();
 			let endHour = (new Date(uberTrip.path[_len - 1][2] * 1000)).getUTCHours();
 			
-			console.log('Start Hour: ' + startHour);
-			console.log('End Hour: ' + endHour);
 			return new Trip({
 				driver_id: uberTrip.driver_id,
 				driver_name: uberTrip.driver_name,
