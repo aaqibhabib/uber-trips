@@ -58,8 +58,12 @@ if(filename.length === 1) {
 			let endTime = uberTrip.path[_len - 1][2];
 			let durationMins = (endTime - startTime) / 60;
 			
-			let startHour = (new Date(uberTrip.path[0][2])).getUTCHours();
-			let endHour = (new Date(uberTrip.path[_len - 1][2])).getUTCHours();
+			// JS dates takes millisecond epoch, we have seconds epoch
+			let startHour = (new Date(uberTrip.path[0][2] * 1000)).getUTCHours();
+			let endHour = (new Date(uberTrip.path[_len - 1][2] * 1000)).getUTCHours();
+			
+			console.log('Start Hour: ' + startHour);
+			console.log('End Hour: ' + endHour);
 			return new Trip({
 				driver_id: uberTrip.driver_id,
 				driver_name: uberTrip.driver_name,
@@ -150,10 +154,11 @@ router.route('/search/')
 		if(passengerName){
 			query.find({'passenger_name': passengerName});
 		}
-		// if(time_of_day){
-		// 	query.find('start_hour').lte(time_of_day);
-		// 	query.find('end_hour').gte(time_of_day);
-		// }
+		if(time_of_day){
+			// search for trips that were active during time_of_day (start_hour <= time_of_day <= end_hour)
+			query.find({'start_hour' : {$lte : time_of_day}});
+			query.find({'start_hour' : {$gte : time_of_day}});
+		}
 		if(req.query.all !== "true") {
 			query.select({"path" : 0});
 		}
