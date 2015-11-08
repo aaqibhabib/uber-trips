@@ -105,8 +105,7 @@ router.route('/trips')
 
 // get all the trips (accessed at GET http://localhost:8080/api/trips)
 	.get(function (req, res) {
-		let query = Trip
-		.find();
+		let query = Trip.find();
 		if(req.query.all !== "true") {
 			query.select({"path" : 0});
 		}
@@ -132,7 +131,40 @@ router.route('/trips/:trip_id')
 			res.json(trip);
 		});
 	})
+	
+// on routes that end in /search/
+// ----------------------------------------------------
+router.route('/search/')
 
+// get the trips that meet the requested search params
+// driver_name: 'Aaqib Habib', passenger_name: 'Bill Gates', time_of_day: '0-23'
+	.get(function (req, res) {
+		let driverName = req.query.driver_name;
+		let passengerName = req.query.passenger_name;
+		let time_of_day = req.query.time_of_day;
+		
+		let query = Trip.find();
+		if(driverName) {
+			query.find({'driver_name': driverName});
+		}
+		if(passengerName){
+			query.find({'passenger_name': passengerName});
+		}
+		// if(time_of_day){
+		// 	query.find('start_hour').lte(time_of_day);
+		// 	query.find('end_hour').gte(time_of_day);
+		// }
+		if(req.query.all !== "true") {
+			query.select({"path" : 0});
+		}
+		query.exec(
+			function (err, trips) {
+			if (err)
+				res.send(err);
+
+			res.json(trips);
+		});
+	})
 
 // REGISTER OUR ROUTES -------------------------------
 app.use('/api', router);
