@@ -1,3 +1,4 @@
+/// <reference path="typings/tsd.d.ts" />
 'use strict'
 // BASE SETUP
 // =============================================================================
@@ -10,7 +11,7 @@ var bodyParser = require('body-parser');
 var app = express();
 var morgan = require('morgan');
 
-var models = require('./app/models/trip.js');
+var models = require('./app/models.js');
 var Point = models.Point;
 var Trip = models.Trip;
 
@@ -89,13 +90,6 @@ if(filename.length === 1) {
 // create our router
 var router = express.Router();
 
-// middleware to use for all requests
-router.use(function (req, res, next) {
-	// do logging
-	console.log('Something is happening.');
-	next();
-});
-
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 router.get('/', function (req, res) {
 	res.json({ message: 'hooray! welcome to the uber api!' });
@@ -121,6 +115,28 @@ router.route('/trips')
 		});
 	});
 
+router.route('/trips/stats')
+
+// get all the trip stats (accessed at GET http://localhost:8080/api/trips/stats)
+	.get(function (req, res) {
+		let driverQuery = Trip.aggregate({$project: {driver_name:1}},
+		{$group: { _id: "$driver_name", count: {$sum: 1} }}).exec();
+		
+		let passengerQuery = Trip.aggregate({$project: {passenger_name:1}},
+		{$group: { _id: "$passenger_name", count: {$sum: 1} }}).exec();
+		
+		let startHistoquery = Trip.aggregate({$project: {start_hour:1}},
+		{$group: { _id: "$start_hour", count: {$sum: 1} }}).exec();
+		
+		Promise.all([driverQuery, passengerQuery, startHistoquery]).then(function(values){
+			res.json({
+				drivers: values[0],
+				passengers: values[1],
+				hours: values[2]
+			});
+		}).catch(err => res.send(err));
+		
+	});
 // on routes that end in /trips/:trip_id
 // ----------------------------------------------------
 router.route('/trips/:trip_id')
@@ -143,7 +159,7 @@ router.route('/search/')
 	.get(function (req, res) {
 		let driverName = req.query.driver_name;
 		let passengerName = req.query.passenger_name;
-		let time_of_day = req.query.time_of_day;
+		let start_hour = req.query.start_hour;
 		
 		let query = Trip.find();
 		if(driverName) {
@@ -152,10 +168,9 @@ router.route('/search/')
 		if(passengerName){
 			query.find({'passenger_name': passengerName});
 		}
-		if(time_of_day){
+		if(start_hour){
 			// search for trips that were active during time_of_day (start_hour <= time_of_day <= end_hour)
-			query.find({'start_hour' : {$lte : time_of_day}});
-			query.find({'start_hour' : {$gte : time_of_day}});
+			query.find({'start_hour' : start_hour});
 		}
 		if(req.query.all !== "true") {
 			query.select({"path" : 0});
@@ -168,6 +183,27 @@ router.route('/search/')
 			res.json(trips);
 		});
 	})
+	
+// on routes that end in /search/
+// ----------------------------------------------------
+router.route('/search/geo/')
+	// get trips that are inside the bounding box
+	// latitude_min, latitude_max, longitude_min, longitude_max
+	.get(function (req, res) {
+		let latitude_min = req.query.latitude_min;
+		let latitude_max = req.query.latitude_max;
+		let longitude_min = req.query.longitude_min;
+		let longitude_max = req.query.longitude_max;
+		
+		Trip.find({
+			'path.longitude': {$gte: longitude_min, $lte: longitude_max},
+			'path.latitude': {$gte: latitude_min, $lte: latitude_max},
+		})
+		.then(function (result) {
+			res.json(result);
+		})
+		.catch(err => res.send(err));
+	});
 
 // REGISTER OUR ROUTES -------------------------------
 app.use('/api', router);

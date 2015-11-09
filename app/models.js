@@ -1,13 +1,14 @@
-var mongoose     = require('mongoose');
-var Schema       = mongoose.Schema;
+/// <reference path="../typings/tsd.d.ts" />
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
-var PointSchema = new Schema ({
+var PointSchema = new Schema({
 	latitude: Number,
 	longitude: Number,
 	time: Number
 })
 
-var TripSchema   = new Schema({
+var TripSchema = new Schema({
 	driver_id: Number,
 	driver_name: String,
 	passenger_id: Number,
