@@ -102,6 +102,8 @@ router.route('/trips')
 // get all the trips (accessed at GET http://localhost:8080/api/trips)
 	.get(function (req, res) {
 		let query = Trip.find();
+		
+		// Remove paths if not requested
 		if(req.query.all !== "true") {
 			query.select({"path" : 0});
 		}
@@ -169,9 +171,11 @@ router.route('/search/')
 			query.find({'passenger_name': passengerName});
 		}
 		if(start_hour){
-			// search for trips that were active during time_of_day (start_hour <= time_of_day <= end_hour)
+			// search for trips that started the given UTC hour
 			query.find({'start_hour' : start_hour});
 		}
+		
+		// Remove paths if not requested
 		if(req.query.all !== "true") {
 			query.select({"path" : 0});
 		}
@@ -196,8 +200,12 @@ router.route('/search/geo/')
 		let longitude_max = req.query.longitude_max;
 		
 		Trip.find({
-			'path.longitude': {$gte: longitude_min, $lte: longitude_max},
-			'path.latitude': {$gte: latitude_min, $lte: latitude_max},
+			path : {
+				$elemMatch : {
+					longitude : {$gte: longitude_min, $lte: longitude_max},
+					latitude : {$gte: latitude_min, $lte: latitude_max}
+				}
+			}
 		})
 		.then(function (result) {
 			res.json(result);
