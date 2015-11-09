@@ -8,10 +8,11 @@ var filename = process.argv.slice(2);
 // call the packages we need
 var express = require('express');
 var bodyParser = require('body-parser');
+var path = require('path');
 var app = express();
 var morgan = require('morgan');
 
-var models = require('./app/models.js');
+var models = require('./models.js');
 var Point = models.Point;
 var Trip = models.Trip;
 
@@ -214,6 +215,8 @@ router.route('/search/geo/')
 	});
 
 // REGISTER OUR ROUTES -------------------------------
+// configure static files
+app.use('/', express.static(path.join(__dirname, 'public')));
 app.use('/api', router);
 
 // START THE SERVER
