@@ -1,11 +1,16 @@
 # Overview
-TODO
+A simple api for viewing Uber data. trips100.json is the provided file, however is limited in timestamp spread. genData.js is a utility that uses trips100.json and spreads start_hour and increases the duration of each trip. This is the file used to seed the DB.
+
+This app relies on using a MongoDB instance on hosted on MongoLab.
+
 # Installing
 1. git clone https://github.com/aaqibhabib/uber-trips.git
 2. cd uber-trips
 3. npm install
-4. npm start
 
+Too seed data, run: `node app trips100-ah.json`
+
+To launch the app, run: `node app.js`
 # Limitations
 1. Limited request/response error handeling
 2. Responses are not truncated to max length
@@ -15,9 +20,12 @@ Base URL: [host:port]/[route]
 
 ## /api/
 *Returns JSON of welcome message.*
-### Example:
 
-Response:
+#### Request:
+
+/api/
+
+#### Response:
 ```
 {
   "message": "hooray! welcome to the uber api!"
@@ -26,7 +34,10 @@ Response:
 
 ## /api/trip/
 *Returns array of all trips*
-### Example:
+
+#### Request:
+/api/trip/
+#### Response:
 
 ```
 [
@@ -51,7 +62,9 @@ Response:
 #### /api/trip/?all=true
 Returns all trips with path array
 
-##### Example:
+##### Request:
+/api/trip/?all=true
+##### Response:
 ```
 [
   {
@@ -86,9 +99,11 @@ Returns all trips with path array
 ```
 ## /api/trip/:trip_id/
 *Returns a trip matching `trip_id`*
-### Example:
-`trip_id` is `563fe6d2c9f3128c0da06248`
 
+#### Request:
+/api/trip/563fe6d2c9f3128c0da06248/
+
+#### Response:
 ```
 {
 	"_id": "563fe6d2c9f3128c0da06248",
@@ -125,7 +140,11 @@ Returns all trips with path array
 
 Includes driver names, passenger names, and histrogram of which hour trips started
 
-### Example:
+#### Request:
+/api/trips/stats/
+
+#### Response:
+
 ```
 {
   "drivers": [
@@ -193,11 +212,11 @@ Includes driver names, passenger names, and histrogram of which hour trips start
 #### /api/search/?all=true
 Returns all trips with path array
 
-### Example:
+#### Request:
 
-Request: /api/search/?driver_name=Alice+Aardvark&passenger_name=Danielle+Daffodil
+/api/search/?driver_name=Alice+Aardvark&passenger_name=Danielle+Daffodil
 
-Response: 
+#### Response: 
 
 ```
 [
@@ -256,9 +275,11 @@ Response:
 ]
 ```
 
-Request: /api/search/?start_hour=22&all=true
+### Request:
 
-Response:
+/api/search/?start_hour=22&all=true
+
+### Response:
 
 ```
 [
@@ -324,6 +345,49 @@ Response:
 ## /api/search/geo/
 *Returns array of trips that fall within specified bounding box*
 
-### Example:
+Path Variable Key | Value | Notes
+--- | --- | ---
+latitude_min | Latitude | 40.48989831269914
+latitude_max | Latitude | 40.48989831269918
+longitude_min | Longitude | -79.87964735936295
+longitude_max | Longitude | -79.87964735936291
 
-/api/search/geo/?latitude_min=40.47125953962765&latitude_max=40.47125953962765&longitude_min=-80.02142934261603&longitude_max=-80.02142934261603
+### Request:
+
+/api/search/geo/?latitude_min=[latitude_min]&latitude_max[latitude_max]&longitude_min=[longitude_min]&longitude_max=[longitude_max]
+
+/api/search/geo/?latitude_min=40.48989831269914&latitude_max=40.48989831269918&longitude_min=-79.87964735936295&longitude_max=-79.87964735936291
+
+### Response:
+
+```
+[
+  {
+    "_id": "564028928b2b9fdc2a327294",
+    "driver_id": 3,
+    "driver_name": "Carol Cheetah",
+    "passenger_id": 101,
+    "passenger_name": "Adam Aqua",
+    "start_hour": 8,
+    "end_hour": 8,
+    "start_time": 1444984506,
+    "end_time": 1444984566,
+    "duration_mins": 1,
+    "__v": 0,
+    "path": [
+      {
+        "_id": "564028928b2b9fdc2a327292",
+        "time": 1444984506,
+        "longitude": -79.87964735936293,
+        "latitude": 40.48989831269916
+      },
+      {
+        "_id": "564028928b2b9fdc2a327293",
+        "time": 1444984566,
+        "longitude": -79.87477469113861,
+        "latitude": 40.48821477266711
+      }
+    ]
+  }
+]
+```
