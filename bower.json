@@ -1,0 +1,25 @@
+{
+  "name": "uber",
+  "description": "",
+  "main": "app.js",
+  "authors": [
+    "Aaqib Habib"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/aaqibhabib/uber-trips",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "angular": "~1.4.7",
+    "angular-bootstrap": "~0.14.3",
+    "bootstrap": "~3.3.5"
+  }
+}
