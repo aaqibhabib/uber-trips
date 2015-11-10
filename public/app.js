@@ -5,6 +5,10 @@
 	var app = angular.module('App', ['ui.bootstrap']);
 	var baseUrl = '/api/';
 	
+	/**
+	 * Question 1
+	 * Shows all trips in the system
+	 */
 	app.controller('Q1Ctrl', function($scope, $http) {
 		$scope.maxSize = 10;
 		$scope.currentPage = 1;
@@ -20,6 +24,10 @@
 
 	});
 	
+	/**
+	 * Question 2
+	 * Allows a user to search by driver, passenger, and hour of day
+	 */
 	app.controller('Q2Ctrl', function($scope, $http) {
 		// $scope.selectedDriver;
 		// $scope.selectedPassenger;
@@ -66,6 +74,10 @@
 		});
 	});
 	
+	/**
+	 * Question 3
+	 * Allows a user to search by geo coords (bounding box)
+	 */
 	app.controller('Q3Ctrl', function($scope, $http) {
 		$scope.longitudeMin = "";
 		$scope.longitudeMax = "";
@@ -113,6 +125,10 @@
 		};
 	});
 	
+	/**
+	 * Question 4
+	 * Shows bar charts of trip stats
+	 */
 	app.controller('Q4Ctrl', function($scope, $http) {
 		$scope.showGraph = function () {
 			$http.get(baseUrl + 'trips/stats/').then(function (res) {
@@ -196,9 +212,16 @@
 				}
 			});
 		}
-		
-		
-		
 	});
+	
+	/**
+	 * Quesiton 5
+	 * Shows a map of trips taken
+	 */
+	app.controller('Q5Ctrl', function($scope, $http) {
+		$http.get(baseUrl + '/trips?all=true').then(function(res){
+			$scope.data = res.data;
+		}).catch();
+	})
 	
 })();
