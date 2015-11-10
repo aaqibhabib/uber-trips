@@ -112,4 +112,93 @@
 			$scope.alerts.splice(index, 1);
 		};
 	});
+	
+	app.controller('Q4Ctrl', function($scope, $http) {
+		$scope.showGraph = function () {
+			$http.get(baseUrl + 'trips/stats/').then(function (res) {
+				showDriverGraph(res.data.drivers);
+				showPassengerGraph(res.data.passengers);
+				showHourGraph(res.data.hours);
+			})
+		}
+		
+		function showDriverGraph (data) {
+			var chartData = data.sort(function (a, b){
+				return a['_id'].localeCompare(b['_id']);
+			})
+			$scope.chart1 = c3.generate({
+				bindto: '#chart1',
+				data: {
+					json: chartData,
+					keys: {
+						x: '_id',
+						value: ['count'],
+					},
+					type: 'bar',
+					names: {
+						count: 'Count',
+					}
+				},
+				axis: {
+					x: {
+						type: 'category'
+					}
+				}
+			});
+		}
+		
+		function showPassengerGraph (data) {
+			var chartData = data.sort(function (a, b){
+				return a['_id'].localeCompare(b['_id']);
+			})
+			$scope.chart3 = c3.generate({
+				bindto: '#chart2',
+				data: {
+					json: chartData,
+					keys: {
+						x: '_id',
+						value: ['count'],
+					},
+					type: 'bar',
+					names: {
+						count: 'Count',
+					}
+				},
+				axis: {
+					x: {
+						type: 'category'
+					}
+				}
+			});
+		}
+		
+		function showHourGraph (data) {
+			var chartData = data.sort(function (a, b){
+				return a['_id'] - b['_id'];
+			})
+			$scope.chart3 = c3.generate({
+				bindto: '#chart3',
+				data: {
+					json: chartData,
+					keys: {
+						x: '_id',
+						value: ['count'],
+					},
+					type: 'bar',
+					names: {
+						count: 'Count',
+					}
+				},
+				axis: {
+					x: {
+						type: 'category'
+					}
+				}
+			});
+		}
+		
+		
+		
+	});
+	
 })();

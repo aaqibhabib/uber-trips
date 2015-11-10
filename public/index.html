@@ -10,6 +10,7 @@
     <!-- Bootstrap -->
     <link rel="stylesheet" href="./vendor/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="./vendor/bootstrap/dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="./vendor/c3/c3.min.css">
     
     <link href="style.css" rel="stylesheet">
   </head>
@@ -163,6 +164,21 @@
         </table>
         <h4 class="text-center" ng-hide="trips.length">No records to show</h4>
       </div>
+      <hr class="col-md-12">
+      
+       <!-- QUESTION 4 -->
+      <h2 id="sec4">Question 4</h2>
+      <p>Generate statistics for the system.  Some questions we might want to answer include: What's the most popular time of day to take trips?  Which drivers have given the most number of rides?  Which passenger has spent the most amount of time in an Uber?.</p>
+      <div ng-controller="Q4Ctrl" ng-init="showGraph()">
+        <h3>Number of trips by driver</h3>
+        <div id="chart1"></div>
+        
+        <h3>Number of trips by passenger</h3>
+        <div id="chart2"></div>
+        
+        <h3>Popular start time (hour of day)</h3>
+        <div id="chart3"></div>
+      </div>
     </div>
     
     <footer id="footer">
@@ -173,6 +189,8 @@
     <script type="text/javascript" src="./vendor/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="./vendor/angular/angular.min.js"></script>
     <script type="text/javascript" src="./vendor/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script type="text/javascript" src="./vendor/d3/d3.min.js"></script>
+    <script type="text/javascript" src="./vendor/c3/c3.min.js"></script>
     <script type="text/javascript" src="app.js"></script>
   </body>
 </html>
