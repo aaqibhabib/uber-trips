@@ -43,7 +43,10 @@
         </nav>
       </div>
     </header>
+    
     <div class="container">
+      
+      <!-- QUESTION 1 -->
       <h2 id="sec1">Question 1</h2>
       <div ng-controller="Q1Ctrl" >
         <p>Display a list of trips taken in a table with the driver, passenger, start time, and trip duration.</p>
@@ -52,35 +55,36 @@
           <tr>
             <th> Driver </th>
             <th> Passenger </th>
-            <th> Start Time </th>
+            <th> Start Time (UTC)</th>
             <th> Trip Duration (Mins) </th>
           </tr>
           
           <tr ng-repeat="trip in trips.slice(((currentPage-1)*maxSize), ((currentPage)*maxSize)) track by $index">
             <td>{{ trip.driver_name }}</td>
             <td>{{ trip.passenger_name }}</td>
-            <td>{{ trip.start_time }}</td>
+            <td>{{ trip.start_time * 1000 | date : 'short' : 'UTC'}}</td>
             <td>{{ trip.duration_mins }}</td>
           </tr>
         </table>
         <uib-pagination total-items="trips.length" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></uib-pagination>
       </div>
       <hr class="col-md-12">
+      
       <!-- QUESTION 2 -->
       <h2 id="sec2">Question 2</h2>
-      <p>A search API and UI that allows for searching trips by the driver, passenger, and time of day</p>
+      <p>A search API and UI that allows for searching trips by the driver, passenger, and time of day.</p>
       <div ng-controller="Q2Ctrl">
         <div class="row">
           <div class="col-md-4">
-            <select ng-model="selectedDriver" ng-change="update()" class="form-control" convert-to-number>
+            <select ng-model="selectedDriver" ng-change="update()" class="form-control">
               <option value="">Select a driver to search by</option>
-              <option ng-repeat="driver in drivers | orderBy: '+'" value="{{$index}}">{{driver}}</option>
+              <option ng-repeat="driver in drivers | orderBy: '+'" value="{{driver}}">{{driver}}</option>
             </select>
           </div>
           <div class="col-md-4">
-            <select ng-model="selectedPassenger" ng-change="update()" class="form-control" convert-to-number>
+            <select ng-model="selectedPassenger" ng-change="update()" class="form-control">
               <option value="">Select a passenger to search by</option>
-              <option ng-repeat="passenger in passengers | orderBy: '+'" value="{{$index}}">{{passenger}}</option>
+              <option ng-repeat="passenger in passengers | orderBy: '+'" value="{{passenger}}">{{passenger}}</option>
             </select>
           </div>
           <div class="col-md-4">
@@ -97,7 +101,7 @@
             <th> Driver </th>
             <th> Passenger </th>
             <th> Start Hour </th>
-            <th> Start Time </th>
+            <th> Start Time (UTC)</th>
             <th> Trip Duration (Mins) </th>
           </tr>
           
@@ -105,7 +109,55 @@
             <td>{{ trip.driver_name }}</td>
             <td>{{ trip.passenger_name }}</td>
             <td>{{ trip.start_hour }}</td>
-            <td>{{ trip.start_time }}</td>
+            <td>{{ trip.start_time * 1000 | date : 'short' : 'UTC'}}</td>
+            <td>{{ trip.duration_mins }}</td>
+          </tr>
+        </table>
+        <h4 class="text-center" ng-hide="trips.length">No records to show</h4>
+      </div>
+      <hr class="col-md-12">
+      
+      <!-- Question 3 -->
+      <h2 id="sec3">Question 3</h2>
+      <p> A geo-search API that returns trips that pass within a given geo-rectangle.  You only need to deal with the case in which a path point is inside the rectangle; you don't need to interpolate between points.</p>
+      <p>Note: You can only enter numeric, (.), and (-) keys.</p>
+      <div ng-controller="Q3Ctrl">
+        <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+        <div class="row">
+          <div class="col-md-3">
+            <input ng-model="longitudeMin" ng-change="update()" placeholder="Longitude Min" class="form-control" />
+            <h6>Try: -80.06507503604178</h6>
+          </div>
+          <div class="col-md-3">
+            <input ng-model="longitudeMax" ng-change="update()" placeholder="Longitude Max" class="form-control" />
+            <h6>Try: -80.06507503604176</h6>
+          </div>
+          <div class="col-md-3">
+            <input ng-model="latitudeMin" ng-change="update()" placeholder="Latitude Min" class="form-control" />
+            <h6>Try: 40.456763305249473</h6>
+          </div>
+          <div class="col-md-3">
+            <input ng-model="latitudeMax" ng-change="update()" placeholder="Latitude Max" class="form-control" />
+            <h6>Try: 40.456763305249475</h6>
+          </div>
+        </div>
+        <button class="btn btn-primary" ng-click='search()'>Search</button>
+        <h4>&nbsp;</h4>
+        <h4 ng-show="trips.length">{{trips.length}} records found</h4>
+        <table class="table table-hover">
+          <tr>
+            <th> Driver </th>
+            <th> Passenger </th>
+            <th> Start Hour </th>
+            <th> Start Time (UTC)</th>
+            <th> Trip Duration (Mins) </th>
+          </tr>
+          
+          <tr ng-repeat="trip in trips">
+            <td>{{ trip.driver_name }}</td>
+            <td>{{ trip.passenger_name }}</td>
+            <td>{{ trip.start_hour }}</td>
+            <td>{{ trip.start_time * 1000 | date : 'short' : 'UTC'}}</td>
             <td>{{ trip.duration_mins }}</td>
           </tr>
         </table>

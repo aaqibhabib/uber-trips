@@ -112,7 +112,7 @@ router.route('/trips')
 		query.exec(
 			function (err, trips) {
 			if (err)
-				res.send(err);
+				res.status(500).send(err.message);
 
 			res.json(trips);
 		});
@@ -137,7 +137,7 @@ router.route('/trips/stats')
 				passengers: values[1],
 				hours: values[2]
 			});
-		}).catch(err => res.send(err));
+		}).catch(err => {res.status(500).send(err.message)});
 		
 	});
 // on routes that end in /trips/:trip_id
@@ -148,7 +148,7 @@ router.route('/trips/:trip_id')
 	.get(function (req, res) {
 		Trip.findById(req.params.trip_id, function (err, trip) {
 			if (err)
-				res.send(err);
+				res.status(500).send(err.message);
 			res.json(trip);
 		});
 	})
@@ -183,7 +183,7 @@ router.route('/search/')
 		query.exec(
 			function (err, trips) {
 			if (err)
-				res.send(err);
+				res.status(500).send(err.message);
 
 			res.json(trips);
 		});
@@ -211,7 +211,7 @@ router.route('/search/geo/')
 		.then(function (result) {
 			res.json(result);
 		})
-		.catch(err => res.send(err));
+		.catch(err => res.status(500).send(err.message));
 	});
 
 // REGISTER OUR ROUTES -------------------------------
