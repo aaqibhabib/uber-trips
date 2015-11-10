@@ -14,48 +14,102 @@
     <link href="style.css" rel="stylesheet">
   </head>
   <body ng-app="App">
-    <div ng-controller="Q1Ctrl" class="container-fluid">
-      <h4>Q1: Display a list of trips taken in a table with the driver, passenger, start time, and trip duration.</h4>
-      <uib-pagination total-items="trips.length" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></uib-pagination>
-      <table class="table table-hover">
-        <tr>
-          <th> Driver </th>
-          <th> Passenger </th>
-          <th> Start Time </th>
-          <th> Trip Duration (Mins) </th>
-        </tr>
+    <header class="navbar navbar-default navbar-static-top" role="banner">
+      <div class="container">
+        <div class="navbar-header">
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a href="/" class="navbar-brand">UberATC</a>
+        </div>
+        <nav class="collapse navbar-collapse" role="navigation">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="#sec1">Question 1</a>
+            </li>
+            <li>
+              <a href="#sec2">Question 2</a>
+            </li>
+            <li>
+              <a href="#sec3">Question 3</a>
+            </li>
+            <li>
+              <a href="#sec4">Question 4</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <div class="container">
+      <h2 id="sec1">Question 1</h2>
+      <div ng-controller="Q1Ctrl" >
+        <p>Display a list of trips taken in a table with the driver, passenger, start time, and trip duration.</p>
         
-        <tr ng-repeat="trip in trips.slice(((currentPage-1)*maxSize), ((currentPage)*maxSize)) track by $index">
-          <td>{{ trip.driver_name }}</td>
-          <td>{{ trip.passenger_name }}</td>
-          <td>{{ trip.start_time }}</td>
-          <td>{{ trip.duration_mins }}</td>
-        </tr>
-      </table>
-      
-    </div>
-    <!-- QUESTION 2 -->
-    <div ng-controller="Q2Ctrl" class="container-fluid">
-      <h4>Q2: A search API and UI that allows for searching trips by the driver, passenger, and time of day</h4>
-      <div class="row">
-        <div class="col-md-4">
-          <select ng-model="selectedDriver" class="form-control">
-            <option value="">Select a driver to search by</option>
-            <option ng-repeat="driver in drivers | orderBy: '+'" value="{{$index}}">{{driver}}</option>
-          </select>
+        <table class="table table-hover">
+          <tr>
+            <th> Driver </th>
+            <th> Passenger </th>
+            <th> Start Time </th>
+            <th> Trip Duration (Mins) </th>
+          </tr>
+          
+          <tr ng-repeat="trip in trips.slice(((currentPage-1)*maxSize), ((currentPage)*maxSize)) track by $index">
+            <td>{{ trip.driver_name }}</td>
+            <td>{{ trip.passenger_name }}</td>
+            <td>{{ trip.start_time }}</td>
+            <td>{{ trip.duration_mins }}</td>
+          </tr>
+        </table>
+        <uib-pagination total-items="trips.length" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></uib-pagination>
+      </div>
+      <hr class="col-md-12">
+      <!-- QUESTION 2 -->
+      <h2 id="sec2">Question 2</h2>
+      <p>A search API and UI that allows for searching trips by the driver, passenger, and time of day</p>
+      <div ng-controller="Q2Ctrl">
+        <div class="row">
+          <div class="col-md-4">
+            <select ng-model="selectedDriver" ng-change="update()" class="form-control" convert-to-number>
+              <option value="">Select a driver to search by</option>
+              <option ng-repeat="driver in drivers | orderBy: '+'" value="{{$index}}">{{driver}}</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <select ng-model="selectedPassenger" ng-change="update()" class="form-control" convert-to-number>
+              <option value="">Select a passenger to search by</option>
+              <option ng-repeat="passenger in passengers | orderBy: '+'" value="{{$index}}">{{passenger}}</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <select ng-model="selectedHour" ng-change="update()" class="form-control" convert-to-number>
+              <option value="">Select a start hour to search by</option>
+              <option ng-repeat="hour in hourRange track by $index" value="{{$index}}">{{$index}}</option>
+            </select>
+          </div>
         </div>
-        <div class="col-md-4">
-          <select ng-model="selectedPassenger" class="form-control">
-            <option value="">Select a passenger to search by</option>
-            <option ng-repeat="passenger in passengers | orderBy: '+'" value="{{$index}}">{{passenger}}</option>
-          </select>
-        </div>
-        <div class="col-md-4">
-          <select ng-model="selectedHour" class="form-control">
-            <option value="">Select a hour to search by</option>
-            <option ng-repeat="hour in hourRange track by $index" value="{{$index}}">{{$index}}</option>
-          </select>
-        </div>
+        <h4>&nbsp;</h4>
+        <h4 ng-show="trips.length">{{trips.length}} records found</h4>
+        <table class="table table-hover">
+          <tr>
+            <th> Driver </th>
+            <th> Passenger </th>
+            <th> Start Hour </th>
+            <th> Start Time </th>
+            <th> Trip Duration (Mins) </th>
+          </tr>
+          
+          <tr ng-repeat="trip in trips">
+            <td>{{ trip.driver_name }}</td>
+            <td>{{ trip.passenger_name }}</td>
+            <td>{{ trip.start_hour }}</td>
+            <td>{{ trip.start_time }}</td>
+            <td>{{ trip.duration_mins }}</td>
+          </tr>
+        </table>
+        <h4 class="text-center" ng-hide="trips.length">No records to show</h4>
       </div>
     </div>
     <script type="text/javascript" src="./vendor/jquery/dist/jquery.min.js"></script>

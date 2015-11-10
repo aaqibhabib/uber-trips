@@ -21,10 +21,13 @@
 	});
 	
 	app.controller('Q2Ctrl', function($scope, $http) {
-		$scope.selctedDriver = 1;
-		$scope.selctedPassenger = 1;
-		$scope.selectedHour;
+		// $scope.selectedDriver;
+		// $scope.selectedPassenger;
+		// $scope.selectedHour;
+		$scope.trips = [];
 		
+		$scope.drivers = [];
+		$scope.passengers = [];
 		$scope.hourRange = new Array(24);
 		
 		$http.get(baseUrl + 'trips/stats/').then(function(res){
@@ -32,13 +35,34 @@
 			$scope.drivers = res.data.drivers.map(function(driver){
 				return driver['_id'];
 			});
-			// $scope.drivers.unshift('Choose a driver to filter by');
 			
 			$scope.passengers = res.data.passengers.map(function(passenger){
 				return passenger['_id'];
 			});
-			// $scope.passengers.unshift('Choose a passenger to filter by');
 			
+			$scope.update = function () {
+				console.log(`Driver: ${$scope.selectedDriver}, Passenger: ${$scope.selectedPassenger}, Hour: ${$scope.selectedHour}`);
+				
+				// NOTE: Angular will do encodeUri, no need to do manually do it.
+				var url = baseUrl + '/search/?';
+				if($scope.selectedDriver){
+					url += '&driver_name=' + $scope.drivers[$scope.selectedDriver];
+				}
+				if($scope.selectedPassenger){
+					url += '&passenger_name=' + $scope.passengers[$scope.selectedPassenger];
+				}
+				if($scope.selectedHour){
+					url += '&start_hour=' + $scope.selectedHour;
+				}
+				
+				if($scope.selectedDriver || $scope.selectedPassenger || $scope.selectedHour) {
+					$http.get(url).then(function(res){
+						$scope.trips = res.data;
+					});
+				} else {
+					$scope.trips = [];
+				}
+			}
 		});
 	});
 })();
