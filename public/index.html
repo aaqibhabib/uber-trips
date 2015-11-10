@@ -45,13 +45,13 @@
           </select>
         </div>
         <div class="col-md-4">
-          <select ng-model="selectedPassenger" class="form-control col-md-4">
+          <select ng-model="selectedPassenger" class="form-control">
             <option value="">Select a passenger to search by</option>
             <option ng-repeat="passenger in passengers | orderBy: '+'" value="{{$index}}">{{passenger}}</option>
           </select>
         </div>
         <div class="col-md-4">
-          <select ng-model="selectedHour" class="form-control col-md-4">
+          <select ng-model="selectedHour" class="form-control">
             <option value="">Select a hour to search by</option>
             <option ng-repeat="hour in hourRange track by $index" value="{{$index}}">{{$index}}</option>
           </select>
