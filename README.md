@@ -1,7 +1,10 @@
 # Overview
-A simple api for viewing Uber data. trips100.json is the provided file, however is limited in timestamp spread. genData.js is a utility that uses trips100.json and spreads start_hour and increases the duration of each trip. This is the file used to seed the DB.
+A simple api for viewing Uber data. `trips100.json` is the provided file, however is limited in timestamp spread. `genData.js` is a utility that uses `trips100.json` and spreads `start_hour` and increases the duration of each trip. This is the file used to seed the DB.
 
 This app relies on using a MongoDB instance on hosted on MongoLab.
+
+# Requirements
+ This app designed to work on ES6 systems. Make sure you have the v4+ NodeJS environment and a ES6 browser (new Chrome will do).
 
 # Installing
 1. git clone https://github.com/aaqibhabib/uber-trips.git
@@ -14,8 +17,11 @@ This app relies on using a MongoDB instance on hosted on MongoLab.
 - To seed data, run: `node app trips100-ah.json`
 - To launch the app, run `node app.js` and navigate to `http://localhost:8080/`
 
+Note: `trips100-ah.json` is created using `genData.js` and spreads the start times throughout the day which makes for interesting statistics. 
+`trips100.json` is the original that has all trips starting the same time.
+
 # Limitations
-1. Limited request/response error handeling
+1. Limited request/response error handling
 2. Responses are not truncated to max length
 
 # API Overview
@@ -141,7 +147,7 @@ Returns all trips with path array
 ## /api/trips/stats/
 *Returns an object containing key statistics*
 
-Includes driver names, passenger names, and histrogram of which hour trips started
+Includes driver names, passenger names, and histogram of which hour trips started
 
 #### Request:
 /api/trips/stats/
@@ -209,7 +215,7 @@ driver_name | Alice+Aardvark | Driver name, must be URI encoded. *Optional*
 passenger_name | Danielle+Daffodil | Passenger name, must be URI encoded. *Optional*
 start_hour | 14 | Searches for trips that started this UTC hour. Any value 0-23 is valid. *Optional*
 
-Includes driver names, passenger names, and histrogram of which hour trips started
+Includes driver names, passenger names, and histogram of which hour trips started
 
 ### Option:
 #### /api/search/?all=true

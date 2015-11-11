@@ -84,7 +84,7 @@
 					$scope.trips = [];
 				}
 			}
-		}).catch(function(){
+		}).catch(function () {
 			console.error('Could not get stats info.');
 		});
 	});
@@ -253,12 +253,12 @@
 			draw: undefined
         };
 		
-		// Make query first, that way map and query are loaded together. Should speed things up.
-		$http.get(baseUrl + '/trips?all=true').then(function (res) {
-			uiGmapGoogleMapApi.then(function (maps) {
+		// Load map, then make query
+		uiGmapGoogleMapApi.then(function (maps) {
+			$http.get(baseUrl + '/trips?all=true').then(function (res) {
 				$scope.map.polys = makePolys(res.data);
 			});
-		}).catch(function(){
+		}).catch(function () {
 			console.error('Houston, we have a problem. Could not get all trip info.');
 		});
 
@@ -268,7 +268,7 @@
 			var colors = d3.scale.category10().range();
 			// Build trips array
 			return rawTrips.map(function (trip, i) {
-				// Format loc coords for GMaps
+				// Format loc coords for GMaps, paths are sorted from DB beacuse we entered them sorted.
 				var path = trip.path.map(function (path) {
 					return {
 						"latitude": path.latitude,
