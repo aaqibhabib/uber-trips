@@ -1,10 +1,10 @@
 # Overview
 A simple api for viewing Uber data. `trips100.json` is the provided file, however is limited in timestamp spread. `genData.js` is a utility that uses `trips100.json` and spreads `start_hour` and increases the duration of each trip. This is the file used to seed the DB.
 
-This app relies on using a MongoDB instance on hosted on MongoLab.
+This app relies on using a MongoDB instance hosted on MongoLab.
 
 # Requirements
- This app designed to work on ES6 systems. Make sure you have the v4+ NodeJS environment and a ES6 browser (new Chrome will do).
+ This app is designed to work on ES6 systems. Make sure you have v4+ NodeJS environment and an ES6 browser (new Chrome will do).
 
 # Installing
 1. git clone https://github.com/aaqibhabib/uber-trips.git
@@ -14,7 +14,7 @@ This app relies on using a MongoDB instance on hosted on MongoLab.
 5. gulp scripts
 
 
-- To seed data, run: `node app trips100-ah.json`
+- To seed data, run: `node app trips100-ah.json` OR any JSON file containing trip data located in the root directory. Warning: This will drop the previous collection.
 - To launch the app, run `node app.js` and navigate to `http://localhost:8080/`
 
 Note: `trips100-ah.json` is created using `genData.js` and spreads the start times throughout the day which makes for interesting statistics. 
