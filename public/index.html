@@ -1,200 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Uber Trips</title>
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="./dist/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./dist/bootstrap/dist/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="./dist/c3/c3.css">
-    
-    <link href="style.css" rel="stylesheet">
-  </head>
-  <body ng-app="App">
-    <header class="navbar navbar-default navbar-static-top" role="banner">
-      <div class="container">
-        <div class="navbar-header">
-          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a href="/" class="navbar-brand">UberATC</a>
-        </div>
-        <nav class="collapse navbar-collapse" role="navigation">
-          <ul class="nav navbar-nav">
-            <li>
-              <a href="#sec1">Question 1</a>
-            </li>
-            <li>
-              <a href="#sec2">Question 2</a>
-            </li>
-            <li>
-              <a href="#sec3">Question 3</a>
-            </li>
-            <li>
-              <a href="#sec4">Question 4</a>
-            </li>
-          </ul>
-        </nav>
-      </div>
-    </header>
-    
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <title>Uber Trips</title>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="./dist/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./dist/bootstrap/dist/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="./dist/c3/c3.css">
+
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body ng-app="App">
+  <header class="navbar navbar-default navbar-static-top" role="banner">
     <div class="container">
-      
-      <!-- QUESTION 1 -->
-      <h2 id="sec1">Question 1</h2>
-      <div ng-controller="Q1Ctrl" >
-        <p>Display a list of trips taken in a table with the driver, passenger, start time, and trip duration.</p>
-        
-        <table class="table table-hover">
-          <tr>
-            <th> Driver </th>
-            <th> Passenger </th>
-            <th> Start Time (UTC)</th>
-            <th> Trip Duration (Mins) </th>
-          </tr>
-          
-          <tr ng-repeat="trip in trips.slice(((currentPage-1)*maxSize), ((currentPage)*maxSize)) track by $index">
-            <td>{{ trip.driver_name }}</td>
-            <td>{{ trip.passenger_name }}</td>
-            <td>{{ trip.start_time * 1000 | date : 'short' : 'UTC'}}</td>
-            <td>{{ trip.duration_mins }}</td>
-          </tr>
-        </table>
-        <uib-pagination total-items="trips.length" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></uib-pagination>
+      <div class="navbar-header">
+        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a href="/" class="navbar-brand">UberATC</a>
       </div>
-      <hr class="col-md-12">
-      
-      <!-- QUESTION 2 -->
-      <h2 id="sec2">Question 2</h2>
-      <p>A search API and UI that allows for searching trips by the driver, passenger, and time of day.</p>
-      <div ng-controller="Q2Ctrl">
-        <div class="row">
-          <div class="col-md-4">
-            <select ng-model="selectedDriver" ng-change="update()" class="form-control">
-              <option value="">Select a driver to search by</option>
-              <option ng-repeat="driver in drivers | orderBy: '+'" value="{{driver}}">{{driver}}</option>
-            </select>
-          </div>
-          <div class="col-md-4">
-            <select ng-model="selectedPassenger" ng-change="update()" class="form-control">
-              <option value="">Select a passenger to search by</option>
-              <option ng-repeat="passenger in passengers | orderBy: '+'" value="{{passenger}}">{{passenger}}</option>
-            </select>
-          </div>
-          <div class="col-md-4">
-            <select ng-model="selectedHour" ng-change="update()" class="form-control" convert-to-number>
-              <option value="">Select a start hour to search by</option>
-              <option ng-repeat="hour in hourRange track by $index" value="{{$index}}">{{$index}}</option>
-            </select>
-          </div>
-        </div>
-        <h4>&nbsp;</h4>
-        <h4 ng-show="trips.length">{{trips.length}} records found</h4>
-        <table class="table table-hover">
-          <tr>
-            <th> Driver </th>
-            <th> Passenger </th>
-            <th> Start Hour </th>
-            <th> Start Time (UTC)</th>
-            <th> Trip Duration (Mins) </th>
-          </tr>
-          
-          <tr ng-repeat="trip in trips">
-            <td>{{ trip.driver_name }}</td>
-            <td>{{ trip.passenger_name }}</td>
-            <td>{{ trip.start_hour }}</td>
-            <td>{{ trip.start_time * 1000 | date : 'short' : 'UTC'}}</td>
-            <td>{{ trip.duration_mins }}</td>
-          </tr>
-        </table>
-        <h4 class="text-center" ng-hide="trips.length">No records to show</h4>
-      </div>
-      <hr class="col-md-12">
-      
-      <!-- Question 3 -->
-      <h2 id="sec3">Question 3</h2>
-      <p> A geo-search API that returns trips that pass within a given geo-rectangle.  You only need to deal with the case in which a path point is inside the rectangle; you don't need to interpolate between points.</p>
-      <p>Note: You can only enter numeric, (.), and (-) keys.</p>
-      <div ng-controller="Q3Ctrl">
-        <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
-        <div class="row">
-          <div class="col-md-3">
-            <input ng-model="longitudeMin" ng-change="update()" placeholder="Longitude Min" class="form-control" />
-            <h6>Try: -80.06507503604178</h6>
-          </div>
-          <div class="col-md-3">
-            <input ng-model="longitudeMax" ng-change="update()" placeholder="Longitude Max" class="form-control" />
-            <h6>Try: -80.06507503604176</h6>
-          </div>
-          <div class="col-md-3">
-            <input ng-model="latitudeMin" ng-change="update()" placeholder="Latitude Min" class="form-control" />
-            <h6>Try: 40.456763305249473</h6>
-          </div>
-          <div class="col-md-3">
-            <input ng-model="latitudeMax" ng-change="update()" placeholder="Latitude Max" class="form-control" />
-            <h6>Try: 40.456763305249475</h6>
-          </div>
-        </div>
-        <button class="btn btn-primary" ng-click='search()'>Search</button>
-        <h4>&nbsp;</h4>
-        <h4 ng-show="trips.length">{{trips.length}} records found</h4>
-        <table class="table table-hover">
-          <tr>
-            <th> Driver </th>
-            <th> Passenger </th>
-            <th> Start Hour </th>
-            <th> Start Time (UTC)</th>
-            <th> Trip Duration (Mins) </th>
-          </tr>
-          
-          <tr ng-repeat="trip in trips">
-            <td>{{ trip.driver_name }}</td>
-            <td>{{ trip.passenger_name }}</td>
-            <td>{{ trip.start_hour }}</td>
-            <td>{{ trip.start_time * 1000 | date : 'short' : 'UTC'}}</td>
-            <td>{{ trip.duration_mins }}</td>
-          </tr>
-        </table>
-        <h4 class="text-center" ng-hide="trips.length">No records to show</h4>
-      </div>
-      <hr class="col-md-12">
-      
-       <!-- QUESTION 4 -->
-      <h2 id="sec4">Question 4</h2>
-      <p>Generate statistics for the system.  Some questions we might want to answer include: What's the most popular time of day to take trips?  Which drivers have given the most number of rides?  Which passenger has spent the most amount of time in an Uber?</p>
-      <div ng-controller="Q4Ctrl" ng-init="showGraph()">
-        <h3>Number of trips by driver</h3>
-        <div id="chart1"></div>
-        
-        <h3>Number of trips by passenger</h3>
-        <div id="chart2"></div>
-        
-        <h3>Popular start time (hour of day)</h3>
-        <div id="chart3"></div>
-      </div>
-      <hr class="col-md-12">
-      
-       <!-- QUESTION 5 -->
-      <h2 id="sec5">Question 5</h2>
-      <p>Display the trip on a map.</p>
-      <div ng-controller="Q5Ctrl">
-        <ui-gmap-google-map center='map.center' zoom='map.zoom'></ui-gmap-google-map>
-      </div>
+      <nav class="collapse navbar-collapse" role="navigation">
+        <ul class="nav navbar-nav">
+          <li> <a href="#sec1">Question 1</a> </li>
+          <li> <a href="#sec2">Question 2</a> </li>
+          <li> <a href="#sec3">Question 3</a> </li>
+          <li> <a href="#sec4">Question 4</a> </li>
+          <li> <a href="#sec5">Question 5</a> </li>
+        </ul>
+      </nav>
     </div>
-    
-    <footer id="footer">
-      <div class="container">
-        <p class="text-muted credit">Designed and built with all the love in the world by Aaqib Habib.</p>
+  </header>
+
+  <div class="container">
+
+    <!-- QUESTION 1 -->
+    <h2 id="sec1">Question 1</h2>
+    <div ng-controller="Q1Ctrl">
+      <p>Display a list of trips taken in a table with the driver, passenger, start time, and trip duration.</p>
+
+      <table class="table table-hover">
+        <tr>
+          <th> Driver </th>
+          <th> Passenger </th>
+          <th> Start Time (UTC)</th>
+          <th> Trip Duration (Mins) </th>
+        </tr>
+
+        <tr ng-repeat="trip in trips.slice(((currentPage-1)*maxSize), ((currentPage)*maxSize)) track by $index">
+          <td>{{ trip.driver_name }}</td>
+          <td>{{ trip.passenger_name }}</td>
+          <td>{{ trip.start_time * 1000 | date : 'short' : 'UTC'}}</td>
+          <td>{{ trip.duration_mins }}</td>
+        </tr>
+      </table>
+      <uib-pagination total-items="trips.length" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"></uib-pagination>
+    </div>
+    <hr class="col-md-12">
+
+    <!-- QUESTION 2 -->
+    <h2 id="sec2">Question 2</h2>
+    <p>A search API and UI that allows for searching trips by the driver, passenger, and time of day.</p>
+    <div ng-controller="Q2Ctrl">
+      <div class="row">
+        <div class="col-md-4">
+          <select ng-model="selectedDriver" ng-change="update()" class="form-control">
+            <option value="">Select a driver to search by</option>
+            <option ng-repeat="driver in drivers | orderBy: '+'" value="{{driver}}">{{driver}}</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <select ng-model="selectedPassenger" ng-change="update()" class="form-control">
+            <option value="">Select a passenger to search by</option>
+            <option ng-repeat="passenger in passengers | orderBy: '+'" value="{{passenger}}">{{passenger}}</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <select ng-model="selectedHour" ng-change="update()" class="form-control" convert-to-number>
+            <option value="">Select a start hour to search by</option>
+            <option ng-repeat="hour in hourRange track by $index" value="{{$index}}">{{$index}}</option>
+          </select>
+        </div>
       </div>
-    </footer>
-    <script type="text/javascript" src="./dist/vendor.js"></script>
-    <script type="text/javascript" src="app.js"></script>
-  </body>
+      <h4>&nbsp;</h4>
+      <h4 ng-show="trips.length">{{trips.length}} records found</h4>
+      <table class="table table-hover">
+        <tr>
+          <th> Driver </th>
+          <th> Passenger </th>
+          <th> Start Hour </th>
+          <th> Start Time (UTC)</th>
+          <th> Trip Duration (Mins) </th>
+        </tr>
+
+        <tr ng-repeat="trip in trips">
+          <td>{{ trip.driver_name }}</td>
+          <td>{{ trip.passenger_name }}</td>
+          <td>{{ trip.start_hour }}</td>
+          <td>{{ trip.start_time * 1000 | date : 'short' : 'UTC'}}</td>
+          <td>{{ trip.duration_mins }}</td>
+        </tr>
+      </table>
+      <h4 class="text-center" ng-hide="trips.length">No records to show</h4>
+    </div>
+    <hr class="col-md-12">
+
+    <!-- Question 3 -->
+    <h2 id="sec3">Question 3</h2>
+    <p> A geo-search API that returns trips that pass within a given geo-rectangle. You only need to deal with the case in which
+      a path point is inside the rectangle; you don't need to interpolate between points.</p>
+    <p>Note: You can only enter numeric, (.), and (-) keys.</p>
+    <div ng-controller="Q3Ctrl">
+      <uib-alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</uib-alert>
+      <div class="row">
+        <div class="col-md-3">
+          <input ng-model="longitudeMin" ng-change="update()" placeholder="Longitude Min" class="form-control" />
+          <h6>Try: -80.06507503604178</h6>
+        </div>
+        <div class="col-md-3">
+          <input ng-model="longitudeMax" ng-change="update()" placeholder="Longitude Max" class="form-control" />
+          <h6>Try: -80.06507503604176</h6>
+        </div>
+        <div class="col-md-3">
+          <input ng-model="latitudeMin" ng-change="update()" placeholder="Latitude Min" class="form-control" />
+          <h6>Try: 40.456763305249473</h6>
+        </div>
+        <div class="col-md-3">
+          <input ng-model="latitudeMax" ng-change="update()" placeholder="Latitude Max" class="form-control" />
+          <h6>Try: 40.456763305249475</h6>
+        </div>
+      </div>
+      <button class="btn btn-primary" ng-click='search()'>Search</button>
+      <h4>&nbsp;</h4>
+      <h4 ng-show="trips.length">{{trips.length}} records found</h4>
+      <table class="table table-hover">
+        <tr>
+          <th> Driver </th>
+          <th> Passenger </th>
+          <th> Start Hour </th>
+          <th> Start Time (UTC)</th>
+          <th> Trip Duration (Mins) </th>
+        </tr>
+
+        <tr ng-repeat="trip in trips">
+          <td>{{ trip.driver_name }}</td>
+          <td>{{ trip.passenger_name }}</td>
+          <td>{{ trip.start_hour }}</td>
+          <td>{{ trip.start_time * 1000 | date : 'short' : 'UTC'}}</td>
+          <td>{{ trip.duration_mins }}</td>
+        </tr>
+      </table>
+      <h4 class="text-center" ng-hide="trips.length">No records to show</h4>
+    </div>
+    <hr class="col-md-12">
+
+    <!-- QUESTION 4 -->
+    <h2 id="sec4">Question 4</h2>
+    <p>Generate statistics for the system. Some questions we might want to answer include: What's the most popular time of day
+      to take trips? Which drivers have given the most number of rides? Which passenger has spent the most amount of time
+      in an Uber?</p>
+    <div ng-controller="Q4Ctrl" ng-init="showGraph()">
+      <h3>Number of trips by driver</h3>
+      <div id="chart1"></div>
+
+      <h3>Number of trips by passenger</h3>
+      <div id="chart2"></div>
+
+      <h3>Popular start time (hour of day)</h3>
+      <div id="chart3"></div>
+    </div>
+    <hr class="col-md-12">
+
+    <!-- QUESTION 5 -->
+    <h2 id="sec5">Question 5</h2>
+    <p>Display the trip on a map.</p>
+    <div ng-controller="Q5Ctrl">
+
+      <ui-gmap-google-map id="map" center="map.center" pan="map.pan" zoom="map.zoom" 
+          draggable="true" refresh="map.refresh" options="map.options" bounds="map.bounds">
+
+        <ui-gmap-polylines models="map.polys" path="'path'" stroke="'stroke'" visible="true"
+            geodesic="false" editable="false" draggable="false" static="true" fit='true'>
+        </ui-gmap-polylines>
+        
+      </ui-gmap-google-map>
+    </div>
+  </div>
+
+  <footer id="footer">
+    <div class="container">
+      <p class="text-muted credit">Designed and built with all the love in the world by Aaqib Habib.</p>
+    </div>
+  </footer>
+  <script type="text/javascript" src="./dist/vendor.js"></script>
+  <script type="text/javascript" src="app.js"></script>
+</body>
+
 </html>
