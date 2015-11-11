@@ -3,5 +3,6 @@ logs
 build/Release
 node_modules
 public/vendor
+public/dist
 typings
 launch.json

@@ -2,7 +2,15 @@
 (function(){
 	'use strict'
 	
-	var app = angular.module('App', ['ui.bootstrap']);
+	var app = angular.module('App', ['ui.bootstrap', 'uiGmapgoogle-maps'])
+	.config(['uiGmapGoogleMapApiProvider', function (GoogleMapApi) {
+		GoogleMapApi.configure({
+			key: 'AIzaSyBze806-3Y6hyyTbhLgUwqhszaVb-kBVyg',
+		// v: '3.20',
+		// libraries: 'weather,geometry,visualization'
+		});
+	}]);
+	
 	var baseUrl = '/api/';
 	
 	/**
@@ -218,10 +226,15 @@
 	 * Quesiton 5
 	 * Shows a map of trips taken
 	 */
-	app.controller('Q5Ctrl', function($scope, $http) {
+	app.controller('Q5Ctrl', function($scope, $http, uiGmapGoogleMapApi) {
 		$http.get(baseUrl + '/trips?all=true').then(function(res){
 			$scope.data = res.data;
 		}).catch();
+		
+		$scope.map = { center: { latitude: 45, longitude: -73 }, zoom: 8 };
+		uiGmapGoogleMapApi.then(function(maps) {
+			
+		});
 	})
 	
 })();

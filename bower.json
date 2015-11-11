@@ -21,6 +21,7 @@
     "angular": "~1.4.7",
     "angular-bootstrap": "~0.14.3",
     "bootstrap": "~3.3.5",
-    "c3": "0.4.11-rc4"
+    "c3": "0.4.11-rc4",
+    "angular-google-maps": "~2.2.1"
   }
 }
