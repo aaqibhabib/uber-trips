@@ -7,10 +7,13 @@ This app relies on using a MongoDB instance on hosted on MongoLab.
 1. git clone https://github.com/aaqibhabib/uber-trips.git
 2. cd uber-trips
 3. npm install
+4. bower install
+5. gulp scripts
 
-Too seed data, run: `node app trips100-ah.json`
 
-To launch the app, run: `node app.js`
+- To seed data, run: `node app trips100-ah.json`
+- To launch the app, run `node app.js` and navigate to `http://localhost:8080/`
+
 # Limitations
 1. Limited request/response error handeling
 2. Responses are not truncated to max length
